@@ -25,10 +25,7 @@ export default function AboutUs() {
       {/* Header */}
       <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-5xl mb-4">About Us</h1>
-          <p className="text-xl text-purple-100">
-            Connecting dancers with world-renowned choreographers since 2016
-          </p>
+          <h1 className="text-5xl mb-4">The Vision Behind Wind Up Dance Tour</h1>
         </div>
       </div>
 
@@ -36,8 +33,6 @@ export default function AboutUs() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         {/* The Vision Behind Wind Up Dance Tour */}
         <div className="max-w-4xl mx-auto mb-16">
-          <h2 className="text-4xl mb-8 text-center">The Vision Behind Wind Up Dance Tour</h2>
-          
           <div className="space-y-6 text-gray-600 leading-relaxed">
             <p>
               Annabella is a dynamic producer and creative entrepreneur with a deep passion for live entertainment, 
