@@ -5,12 +5,45 @@ import { Mail, Phone, MapPin, CheckCircle } from "lucide-react";
 export default function ContactUs() {
   const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // const handleSubmit = (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   setSubmitted(true);
+  //   setTimeout(() => setSubmitted(false), 5000);
+  // };
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setSubmitted(true);
-    setTimeout(() => setSubmitted(false), 5000);
-  };
 
+    // 1. Grab the data from the form
+    const formData = new FormData(e.currentTarget);
+    const data = {
+      first_name: formData.get("first_name"),
+      last_name: formData.get("last_name"),
+      email: formData.get("email"),
+      phone: formData.get("phone"),
+      subject: formData.get("subject"),
+      message: formData.get("message"),
+      newsletter: formData.get("newsletter") === "on" ? 1 : 0, // Convert checkbox to 1 or 0
+    };
+
+    // 2. Send it to your Vercel API
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      if (response.ok) {
+        alert("Thanks! Your message has been saved.");
+        e.currentTarget.reset(); // Clear the form
+      } else {
+        throw new Error("Failed to send");
+      }
+    } catch (err) {
+      alert("Oops! Something went wrong on our end.");
+    }
+  };
+  
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -30,7 +63,7 @@ export default function ContactUs() {
           <div className="lg:col-span-1">
             <div className="bg-white rounded-xl shadow-md p-6">
               <h2 className="text-2xl mb-6">Get In Touch</h2>
-              
+
               <div className="space-y-6">
                 <div className="flex gap-4">
                   <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -115,7 +148,7 @@ export default function ContactUs() {
                 </div>
               )}
 
-              <form onSubmit={handleSubmit} className="space-y-6">
+              {/* <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -209,7 +242,114 @@ export default function ContactUs() {
                 >
                   Send Message
                 </button>
+              </form> */}
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      First Name *
+                    </label>
+                    <input
+                      name="first_name" // Added
+                      type="text"
+                      required
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Last Name *
+                    </label>
+                    <input
+                      name="last_name" // Added
+                      type="text"
+                      required
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Email *
+                    </label>
+                    <input
+                      name="email" // Added
+                      type="email"
+                      required
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Phone Number
+                    </label>
+                    <input
+                      name="phone" // Added
+                      type="tel"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Subject *
+                  </label>
+                  <select
+                    name="subject" // Added
+                    required
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+                  >
+                    <option value="">Select a subject</option>
+                    <option value="general">General Inquiry</option>
+                    <option value="event">Event Information</option>
+                    <option value="registration">Registration Question</option>
+                    <option value="instructor">Instructor Inquiry</option>
+                    <option value="partnership">Partnership Opportunity</option>
+                    <option value="feedback">Feedback</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Message *
+                  </label>
+                  <textarea
+                    name="message" // Added
+                    required
+                    rows={6}
+                    placeholder="Tell us how we can help you..."
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+                  ></textarea>
+                </div>
+
+                <div className="flex items-start">
+                  <input
+                    name="newsletter" // Added
+                    type="checkbox"
+                    id="newsletter"
+                    className="mt-1 mr-2"
+                  />
+                  <label htmlFor="newsletter" className="text-sm text-gray-600">
+                    I'd like to receive updates about upcoming events and workshops
+                  </label>
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full bg-purple-600 text-white py-3 rounded-lg hover:bg-purple-700 transition-colors font-semibold"
+                >
+                  Send Message
+                </button>
               </form>
+
+
+
+
+
             </div>
           </div>
         </div>
