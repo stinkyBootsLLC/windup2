@@ -88,7 +88,7 @@ export default function Home() {
         />
         <div className="relative z-20 text-center text-white px-4 max-w-4xl mx-auto">
           <h1 className="text-5xl md:text-6xl mb-6">
-            WindUp 2.0 Dance Tours
+            WindUp Dance Tours
           </h1>
           <p className="text-xl md:text-2xl mb-8 text-gray-100">
             Join exclusive workshops with world-renowned choreographers and elevate your dance journey
