@@ -1,3 +1,4 @@
+import { Link } from "react-router";
 import { useState } from "react";
 import { Mail, Phone, MapPin, CheckCircle } from "lucide-react";
 
@@ -219,12 +220,12 @@ export default function ContactUs() {
           <p className="text-gray-600 mb-6">
             Check out our FAQ page for answers to commonly asked questions
           </p>
-          <a
-            href="/faq"
+          <Link
+            to="/faq"
             className="inline-block bg-purple-600 text-white px-8 py-3 rounded-lg hover:bg-purple-700 transition-colors font-semibold"
           >
             View FAQ
-          </a>
+          </Link>
         </div>
       </div>
     </div>
