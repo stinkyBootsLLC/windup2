@@ -1,10 +1,6 @@
-
-
 import { Link, Outlet, useLocation } from "react-router";
 import { Menu, X, Facebook, Twitter, Instagram, Mail } from "lucide-react";
 import { useState } from "react";
-
-
 
 export function Layout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
