@@ -178,7 +178,7 @@ export function Layout() {
                 ))}
               </div>
               <p className="text-gray-400 text-sm">
-                Email: info@windupdancetours.com
+                Email: windupdancetour@gmail.com
               </p>
             </div>
           </div>
