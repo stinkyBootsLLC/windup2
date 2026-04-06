@@ -1,5 +1,6 @@
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
+import { Link } from "react-router";
 
 interface FAQItem {
   question: string;
@@ -185,12 +186,12 @@ export default function FAQ() {
             Our team is here to help! Reach out to us and we'll get back to you as
             soon as possible.
           </p>
-          <link
-            href="/contact"
+          <Link
+            to="/contact"
             className="inline-block bg-purple-600 text-white px-8 py-3 rounded-lg hover:bg-purple-700 transition-colors"
           >
             Contact Us
-          </link>
+          </Link>
         </div>
       </div>
     </div>
