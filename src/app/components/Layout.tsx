@@ -1,6 +1,10 @@
+
+
 import { Link, Outlet, useLocation } from "react-router";
 import { Menu, X, Facebook, Twitter, Instagram, Mail } from "lucide-react";
 import { useState } from "react";
+
+
 
 export function Layout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -33,7 +37,7 @@ export function Layout() {
             {/* Logo */}
             <Link to="/" className="flex items-center space-x-2">
               <img 
-                src="https://placehold.co/48x48/9333ea/ffffff?text=LOGO" 
+                src="/assets/images/windupdollonlylogo.png" 
                 alt="Wind Up Dance Tours Logo"
                 className="w-12 h-12 rounded-lg object-cover"
               />
