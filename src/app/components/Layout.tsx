@@ -1,5 +1,14 @@
 import { Link, Outlet, useLocation } from "react-router";
-import { Menu, X, Facebook, Twitter, Instagram, Mail } from "lucide-react";
+import { Menu, X} from "lucide-react";
+
+import { 
+  SiFacebook, 
+  SiX, 
+  SiInstagram, 
+  SiGmail 
+} from '@icons-pack/react-simple-icons';
+
+
 import { useState } from "react";
 
 export function Layout() {
@@ -16,10 +25,10 @@ export function Layout() {
   ];
 
   const socialLinks = [
-    { icon: Facebook, href: "https://www.facebook.com/windupdancetour", label: "Facebook" },
-    { icon: Twitter, href: "https://x.com/windupdancetour", label: "Twitter" },
-    { icon: Instagram, href: "https://www.instagram.com/windupdancetour/", label: "Instagram" },
-    { icon: Mail, href: "mailto:windupdancetour@gmail.com", label: "Email" },
+    { icon: SiFacebook, href: "https://facebook.com", label: "Facebook", color: "#1877F2" },
+    { icon: SiX, href: "https://x.com/windupdancetour", label: "X", color: "#000000" },
+    { icon: SiInstagram, href: "https://www.instagram.com/windupdancetour/", label: "Instagram", color: "#E4405F" },
+    { icon: SiGmail, href: "mailto:windupdancetour@gmail.com", label: "Email", color: "#D14836" },
   ];
 
   const isActive = (path: string) => location.pathname === path;
@@ -175,7 +184,7 @@ export function Layout() {
           </div>
 
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400 text-sm">
-            <p>&copy; {new Date().getFullYear()} Wind Up Dance Tours. All rights reserved.</p>
+            <p>&copy; {new Date().getFullYear()} WindUp Dance Tours. All rights reserved.</p>
           </div>
         </div>
       </footer>
