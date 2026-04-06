@@ -1,62 +1,121 @@
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
 
-export default function FAQ() {
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
+interface FAQItem {
+  question: string;
+  answer: string | React.ReactNode;
+}
 
-  const faqs = [
+interface FAQSection {
+  title: string;
+  items: FAQItem[];
+}
+
+export default function FAQ() {
+  // Use a string ID (e.g., "section-index") to track which specific FAQ is open
+  const [openId, setOpenId] = useState<string | null>(null);
+
+  const faqData: FAQSection[] = [
     {
-      question: "When do we need to register?",
-      answer: "Registration will be open until the event is sold out. A lot of these workshops and events will have LIMITED capacity so it is encouraged to register as early as possible to claim your spot.",
+      title: "REGISTRATION & PAYMENT POLICIES",
+      items: [
+        {
+          question: "When do we need to register?",
+          answer: "Registration will be open until the event is sold out. A lot of these workshops and events will have LIMITED capacity so it is encouraged to register as early as possible to claim your spot.",
+        },
+        {
+          question: "When is payment due?",
+          answer: "Upon registration, you will be taken to the payment page to confirm your spot.",
+        },
+        {
+          question: "Do you accept group registrations?",
+          answer: (
+            <span>
+              Yes we do! Have your studio reach out to{" "}
+              <a href="mailto:windupdancetour@gmail.com" className="text-purple-600 hover:underline">
+                windupdancetour@gmail.com
+              </a>{" "}
+              to obtain your code for studio group registration.
+            </span>
+          ),
+        },
+        {
+          question: "Will I get a confirmation?",
+          answer: "Yes, once payment is complete, your account holder will receive a confirmation email. Registrations without payment are not confirmed and may be removed.",
+        },
+        {
+          question: "Can I register at the event?",
+          answer: "On-site registration is allowed only if space permits. Events may sell out — we strongly recommend registering early.",
+        },
+      ],
     },
     {
-      question: "How do I register for an event?",
-      answer: "You can register through our website by visiting the Events page and clicking 'Register Now' on your desired workshop. You'll need to complete the Dance Workshop Form and submit payment. You'll receive a confirmation email with all the details.",
+      title: "REFUND & CREDIT POLICIES",
+      items: [
+        {
+          question: "Do you offer refunds?",
+          answer: "WIND UP DANCE TOUR, LLC does not offer refunds, transfers, or exchanges for registration fees, except in the case of full event cancellation.",
+        },
+      ],
     },
     {
-      question: "What is your cancellation policy?",
-      answer: "Cancellations made 30+ days before the event receive a full refund. Cancellations made 14-29 days before receive a 50% refund. Unfortunately, we cannot offer refunds for cancellations made less than 14 days before the event. However, you may transfer your registration to another person.",
+      title: "OBSERVATION POLICIES",
+      items: [
+        {
+          question: "Can parents observe classes?",
+          answer: "To ensure the best learning environment, parent/guardian observation is not permitted inside the workshop or studio room (except approved studio directors/teachers). Observer bands are not sold.",
+        },
+        {
+          question: "Are showcases open to the public?",
+          answer: "Yes! Our showcase and closing awards are open for friends & family to attend. Select programming may also be streamed online.",
+        },
+      ],
     },
     {
-      question: "What should I bring to a workshop?",
-      answer: "Please bring comfortable dance attire, appropriate footwear for your dance style, a water bottle, and a towel. Some workshops may have specific requirements which will be listed in your confirmation email.",
+      title: "Check-In & Wristbands",
+      items: [
+        {
+          question: "What are the entry requirements?",
+          answer: (
+            <ul className="list-disc ml-5 space-y-1">
+              <li>All dancers must have a signed waiver before receiving credentials.</li>
+              <li>Wristbands must be worn at all times — no band = no entry.</li>
+              <li>Wristbands may not be shared or transferred.</li>
+            </ul>
+          ),
+        },
+      ],
     },
     {
-      question: "Are the workshops filmed?",
-      answer: "Some workshops may be filmed for promotional purposes. Participants will be notified in advance, and you'll have the option to opt out of being filmed. Personal recording is typically allowed, but this varies by instructor.",
+      title: "VIDEO & PHOTO POLICY",
+      items: [
+        {
+          question: "Can I film during classes?",
+          answer: "Filming or recording during classes is not permitted. If the instructor gives an OK to record during class there will be a designated time to do so. (Wind Up 2.0)",
+        },
+        {
+          question: "How is official media handled?",
+          answer: "Official media teams may capture event footage. By registering, you grant WIND UP DANCE TOUR permission to use images/videos from the event.",
+        },
+      ],
     },
     {
-      question: "Do you offer group discounts?",
-      answer: "Yes! Groups of 5 or more receive a 10% discount, and groups of 10 or more receive a 15% discount. Contact us at info@windupdancetours.com to arrange group registration.",
-    },
-    {
-      question: "How can I become an instructor with Wind Up Dance Tours?",
-      answer: "We're always looking for talented choreographers! Please fill out our Talent Form with your experience, credentials, and video samples of your work. Our team reviews submissions regularly and will contact you if there's a fit.",
-    },
-    {
-      question: "Are there age restrictions?",
-      answer: "Most workshops are open to participants 16 and older. Some events may have different age requirements, which will be clearly stated in the event description. Minors must have parental consent to participate.",
-    },
-    {
-      question: "What COVID-19 safety measures are in place?",
-      answer: "We follow all local health guidelines and venue requirements. This may include capacity limits, ventilation protocols, and optional mask-wearing. Specific measures will be communicated before each event.",
-    },
-    {
-      question: "Can I get a certificate of completion?",
-      answer: "Yes! All participants who complete a workshop receive a digital certificate of completion featuring the instructor's signature and workshop details. Physical certificates can be requested for an additional fee.",
-    },
-    {
-      question: "What if I have dietary restrictions for catered events?",
-      answer: "Some of our full-day workshops include catered meals. Please indicate any dietary restrictions or allergies on your registration form, and we'll do our best to accommodate your needs.",
-    },
-    {
-      question: "How can I stay updated on new events?",
-      answer: "Subscribe to our newsletter through the Contact Us page, or follow us on Instagram, Facebook, and Twitter. We announce new events and early-bird registration opportunities through these channels first.",
+      title: "CODE OF CONDUCT & LIABILITY",
+      items: [
+        {
+          question: "What is the conduct policy?",
+          answer: "WIND UP DANCE TOUR reserves the right to refuse entry or remove any attendee behaving disruptively or unsafely.",
+        },
+        {
+          question: "What is the liability policy?",
+          answer: "Staff, instructors, and affiliates are not responsible for injuries, lost items, or property damage. Participation is voluntary and at your own risk.",
+        },
+      ],
     },
   ];
 
-  const toggleFAQ = (index: number) => {
-    setOpenIndex(openIndex === index ? null : index);
+  const toggleFAQ = (id: string) => {
+    setOpenId(openId === id ? null : id);
   };
 
   return (
@@ -64,39 +123,57 @@ export default function FAQ() {
       {/* Header */}
       <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-5xl mb-4">Frequently Asked Questions</h1>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">Frequently Asked Questions</h1>
           <p className="text-xl text-purple-100">
-            Find answers to common questions about our events
+            Everything you need to know about WindUp Dance Tours.
           </p>
         </div>
       </div>
 
       {/* FAQ Content */}
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="space-y-4">
-          {faqs.map((faq, index) => (
-            <div
-              key={index}
-              className="bg-white rounded-lg shadow-md overflow-hidden"
-            >
-              <button
-                onClick={() => toggleFAQ(index)}
-                className="w-full px-6 py-4 flex justify-between items-center hover:bg-gray-50 transition-colors text-left"
-              >
-                <span className="font-semibold text-gray-900 pr-4">
-                  {faq.question}
-                </span>
-                <ChevronDown
-                  className={`w-5 h-5 text-purple-600 flex-shrink-0 transition-transform ${
-                    openIndex === index ? "rotate-180" : ""
-                  }`}
-                />
-              </button>
-              {openIndex === index && (
-                <div className="px-6 pb-4 text-gray-600">
-                  <p>{faq.answer}</p>
-                </div>
-              )}
+        <div className="space-y-12">
+          {faqData.map((section, sectionIndex) => (
+            <div key={sectionIndex}>
+              <h2 className="text-2xl font-bold text-gray-800 mb-6 border-b pb-2 border-purple-200">
+                {section.title}
+              </h2>
+              <div className="space-y-4">
+                {section.items.map((item, itemIndex) => {
+                  const id = `${sectionIndex}-${itemIndex}`;
+                  const isOpen = openId === id;
+                  
+                  return (
+                    <div
+                      key={id}
+                      className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden"
+                    >
+                      <button
+                        onClick={() => toggleFAQ(id)}
+                        className="w-full px-6 py-4 flex justify-between items-center hover:bg-gray-50 transition-colors text-left"
+                      >
+                        <span className="font-semibold text-gray-900 pr-4">
+                          {item.question}
+                        </span>
+                        <ChevronDown
+                          className={`w-5 h-5 text-purple-600 flex-shrink-0 transition-transform duration-200 ${
+                            isOpen ? "rotate-180" : ""
+                          }`}
+                        />
+                      </button>
+                      <div 
+                        className={`transition-all duration-200 ease-in-out overflow-hidden ${
+                          isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+                        }`}
+                      >
+                        <div className="px-6 pb-4 text-gray-600 border-t border-gray-50 pt-3">
+                          {item.answer}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           ))}
         </div>
@@ -119,3 +196,5 @@ export default function FAQ() {
     </div>
   );
 }
+
+
