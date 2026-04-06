@@ -16,10 +16,10 @@ export function Layout() {
   ];
 
   const socialLinks = [
-    { icon: Facebook, href: "https://facebook.com", label: "Facebook" },
-    { icon: Twitter, href: "https://twitter.com", label: "Twitter" },
-    { icon: Instagram, href: "https://instagram.com", label: "Instagram" },
-    { icon: Mail, href: "mailto:info@windupdancetours.com", label: "Email" },
+    { icon: Facebook, href: "https://www.facebook.com/windupdancetour", label: "Facebook" },
+    { icon: Twitter, href: "https://x.com/windupdancetour", label: "Twitter" },
+    { icon: Instagram, href: "https://www.instagram.com/windupdancetour/", label: "Instagram" },
+    { icon: Mail, href: "mailto:windupdancetour@gmail.com", label: "Email" },
   ];
 
   const isActive = (path: string) => location.pathname === path;
