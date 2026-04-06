@@ -6,8 +6,8 @@ export default function FAQ() {
 
   const faqs = [
     {
-      question: "What skill level do I need to attend workshops?",
-      answer: "Our workshops cater to various skill levels, from beginner to advanced. Each event listing specifies the recommended level. We encourage dancers to choose workshops that match their current abilities for the best learning experience.",
+      question: "When do we need to register?",
+      answer: "Registration will be open until the event is sold out. A lot of these workshops and events will have LIMITED capacity so it is encouraged to register as early as possible to claim your spot.",
     },
     {
       question: "How do I register for an event?",
@@ -66,7 +66,7 @@ export default function FAQ() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="text-5xl mb-4">Frequently Asked Questions</h1>
           <p className="text-xl text-purple-100">
-            Find answers to common questions about our workshops and events
+            Find answers to common questions about our events
           </p>
         </div>
       </div>
