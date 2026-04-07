@@ -118,10 +118,8 @@ export function Layout() {
             {/* About */}
             <div>
               <div className="flex items-center space-x-2 mb-4">
-                {/* replace this logo with  /src/assets/images/logo.png*/}
                 <img 
-                
-                  src="https://placehold.co/40x40/9333ea/ffffff?text=LOGO" 
+                  src="/assets/images/windupdollonlylogo.png" 
                   alt="Wind Up Dance Tours Logo"
                   className="w-10 h-10 rounded-lg object-cover"
                 />
