@@ -94,7 +94,7 @@ export default function ContactUs() {
                 </div>
               )}
 
-              <form onSubmit={handleSubmit} className="space-y-6">
+              {/* <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -195,7 +195,131 @@ export default function ContactUs() {
                 >
                   Send Message
                 </button>
-              </form>
+              </form> */}
+<form onSubmit={handleSubmit} className="space-y-6">
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div>
+      <label htmlFor="first_name" className="block text-sm font-medium text-gray-700 mb-2">
+        First Name *
+      </label>
+      <input
+        id="first_name" // Link to label
+        name="first_name"
+        type="text"
+        autoComplete="given-name"
+        required
+        aria-required="true"
+        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent outline-none"
+      />
+    </div>
+    <div>
+      <label htmlFor="last_name" className="block text-sm font-medium text-gray-700 mb-2">
+        Last Name *
+      </label>
+      <input
+        id="last_name" // Link to label
+        name="last_name"
+        type="text"
+        autoComplete="family-name"
+        required
+        aria-required="true"
+        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent outline-none"
+      />
+    </div>
+  </div>
+
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div>
+      <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+        Email *
+      </label>
+      <input
+        id="email" // Link to label
+        name="email"
+        type="email"
+        autoComplete="email"
+        required
+        aria-required="true"
+        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent outline-none"
+      />
+    </div>
+    <div>
+      <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+        Phone Number
+      </label>
+      <input
+        id="phone" // Link to label
+        name="phone"
+        type="tel"
+        autoComplete="tel"
+        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent outline-none"
+      />
+    </div>
+  </div>
+
+  <div>
+    <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
+      Subject *
+    </label>
+    <select
+      id="subject" // Link to label
+      name="subject"
+      required
+      aria-required="true"
+      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent outline-none"
+    >
+      <option value="">Select a subject</option>
+      <option value="general">General Inquiry</option>
+      <option value="event">Event Information</option>
+      <option value="registration">Registration Question</option>
+      <option value="instructor">Instructor Inquiry</option>
+      <option value="partnership">Partnership Opportunity</option>
+      <option value="feedback">Feedback</option>
+      <option value="other">Other</option>
+    </select>
+  </div>
+
+  <div>
+    <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
+      Message *
+    </label>
+    <textarea
+      id="message" // Link to label
+      name="message"
+      required
+      aria-required="true"
+      rows={6}
+      placeholder="Tell us how we can help you..."
+      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent outline-none"
+    ></textarea>
+  </div>
+
+  <div className="flex items-center">
+    <input
+      id="newsletter" // Already had htmlFor connection, but added name
+      name="newsletter"
+      type="checkbox"
+      className="h-4 w-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500"
+    />
+    <label htmlFor="newsletter" className="ml-2 text-sm text-gray-600">
+      I'd like to receive updates about upcoming events and workshops
+    </label>
+  </div>
+
+  <button
+    type="submit"
+    className="w-full bg-purple-600 text-white py-3 rounded-lg hover:bg-purple-700 focus:ring-4 focus:ring-purple-300 transition-all font-semibold outline-none"
+  >
+    Send Message
+  </button>
+</form>
+
+
+
+
+
+
+
             </div>
           </div>
         </div>
