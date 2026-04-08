@@ -268,7 +268,7 @@ export default function ContactUs() {
                     ) : (
                       <span />
                     )}
-                    <span className="text-xs text-gray-400">
+                    <span className="text-xs text-gray-600">
                       Max 255 characters
                     </span>
                   </div>
