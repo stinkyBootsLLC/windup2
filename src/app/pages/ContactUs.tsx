@@ -227,7 +227,7 @@ export default function ContactUs() {
 
                 <div>
                   <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
-                    Subject *
+                    Subject<span className="text-red-500">*</span>
                   </label>
                   <select
                     id="subject"
@@ -250,7 +250,7 @@ export default function ContactUs() {
 
                 <div>
                   <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
-                    Message *
+                    Message<span className="text-red-500">*</span>
                   </label>
                   <textarea
                     id="message"
