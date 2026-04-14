@@ -18,8 +18,21 @@ interface TalentData {
 }
 
 export default function TalentForm() {
+
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [fileNames, setFileNames] = useState<{ headshot?: string; resume?: string }>({});
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, files } = e.target;
+    if (files && files[0]) {
+      setFileNames((prev) => ({
+        ...prev,
+        [name]: files[0].name,
+      }));
+    }
+  };
 
   const validateTalentForm = (data: TalentData) => {
     const newErrors: Record<string, string> = {};
@@ -44,6 +57,8 @@ export default function TalentForm() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    setIsSubmitting(true); // START LOADING
     setErrors({});
 
     const form = e.currentTarget;
@@ -77,13 +92,14 @@ export default function TalentForm() {
 
       if (response.ok) {
         setSubmitted(true);
+        setFileNames({});
         form.reset();
       } else {
         throw new Error("Submission failed");
       }
     } catch (err) {
       alert("There was an error submitting your application.");
-    }
+    } finally { setIsSubmitting(false); }
   };
 
   if (submitted) {
@@ -237,7 +253,7 @@ export default function TalentForm() {
         <div className="pt-6 border-t border-gray-200">
           <span className="block text-sm font-medium text-gray-700 mb-3" id="disciplines-label">Disciplines:</span>
           <div className="space-y-3" role="group" aria-labelledby="disciplines-label">
-            {['dance', 'music-vocals', 'aerial-pole', 'acting-performance', 'other'].map((val) => (
+            {['dance', 'music-vocals', 'aerial-pole', 'acting-performance'].map((val) => (
               <label key={val} className="flex items-center cursor-pointer group">
                 <input
                   id={`discipline-${val}`}
@@ -259,26 +275,68 @@ export default function TalentForm() {
           <div>
             <label htmlFor="headshot_upload" className="block text-sm font-medium text-gray-700 mb-2">Upload Headshot</label>
             <div className="relative border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-purple-400 transition-colors">
-              <input type="file" id="headshot_upload" name="headshot" accept=".jpg,.jpeg,.png,.pdf" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
-              <Upload className="w-8 h-8 text-gray-600 mx-auto mb-2" />
-              <p className="text-xs text-gray-600">JPG, PNG, or PDF (Max 5MB)</p>
+              <input type="file" id="headshot_upload" name="headshot"
+                accept=".jpg,.jpeg,.png,.pdf"
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                onChange={handleFileChange}
+              />
+
+              <Upload className={`w-8 h-8 mx-auto mb-2 ${fileNames.headshot ? 'text-green-600' : 'text-gray-600'}`} />
+
+              {/* Dynamic Text Display */}
+              {fileNames.headshot ? (
+                <p className="text-sm font-semibold text-green-700">{fileNames.headshot}</p>
+              ) : (
+                <p className="text-xs text-gray-600">JPG, PNG, or PDF (Max 5MB)</p>
+              )}
+
             </div>
           </div>
+          {/* Resume Upload */}
           <div>
-            <label htmlFor="resume_upload" className="block text-sm font-medium text-gray-700 mb-2">Upload Resume</label>
-            <div className="relative border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-purple-400 transition-colors">
-              <input type="file" id="resume_upload" name="resume" accept=".pdf,.doc,.docx" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
-              <Upload className="w-8 h-8 text-gray-600 mx-auto mb-2" />
-              <p className="text-xs text-gray-600">PDF, DOC, or DOCX (Max 5MB)</p>
+            <label htmlFor="resume_upload" className="block text-sm font-medium text-gray-700 mb-2">
+              Upload Resume
+            </label>
+            <div className={`relative border-2 border-dashed rounded-lg p-6 text-center transition-colors ${fileNames.resume ? 'border-green-400 bg-green-50' : 'border-gray-300 hover:border-purple-400'}`}>
+              <input
+                type="file"
+                id="resume_upload"
+                name="resume"
+                accept=".pdf,.doc,.docx"
+                onChange={handleFileChange}
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+              />
+              <Upload className={`w-8 h-8 mx-auto mb-2 ${fileNames.resume ? 'text-green-600' : 'text-gray-600'}`} />
+
+              {/* Dynamic Text Display */}
+              {fileNames.resume ? (
+                <p className="text-sm font-semibold text-green-700">{fileNames.resume}</p>
+              ) : (
+                <p className="text-xs text-gray-600">PDF, DOC, or DOCX (Max 5MB)</p>
+              )}
             </div>
           </div>
         </div>
 
         <button
           type="submit"
-          className="w-full bg-purple-600 text-white py-4 rounded-lg hover:bg-purple-700 transition-all font-bold shadow-lg focus:ring-4 focus:ring-purple-300 outline-none active:scale-95"
+          disabled={isSubmitting}
+          className={`w-full py-4 rounded-lg font-bold shadow-lg transition-all outline-none flex items-center justify-center space-x-2 ${isSubmitting
+              ? 'bg-purple-400 cursor-not-allowed'
+              : 'bg-purple-600 hover:bg-purple-700 active:scale-95'
+            } text-white`}
         >
-          Submit Application
+          {isSubmitting ? (
+            <>
+              <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              <span>Processing Application...</span>
+            </>
+          ) : (
+            <span>Submit Application</span>
+          )}
         </button>
       </form>
     </div>
