@@ -1,7 +1,8 @@
 import { Link } from "react-router";
 import { useState } from "react";
-import { Mail, Phone, MapPin, CheckCircle } from "lucide-react";
+import { Mail, CheckCircle } from "lucide-react";
 import { sanitize } from "../../lib/util";
+import { Validator } from "../../lib/util";
 
 export default function ContactUs() {
 
@@ -18,43 +19,20 @@ export default function ContactUs() {
     newsletter: number;
   }
 
-  const validate = (data: ContactData) => {
-
+  const validateContactForm = (data: ContactData) => {
     const newErrors: Record<string, string> = {};
-    // This regex allows only letters (including accented ones for international names) 
-    // and enforces a length between 2 and 100 characters.
-    const nameRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ\s]{2,100}$/;
-    // Message check: Min 10, Max 255
-    const messageLength = data.message.trim().length;
-    // Regex for USA phone numbers
-    const phoneRegex = /^(?:\+1\s?)?\(?([2-9][0-8][0-7])\)?[-.\s]?([2-9][0-8][0-7])[-.\s]?([0-9]{4})$/;
-    // Email regex: ensures the string has an @ and a dot
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    // First Name check
-    if (!data.first_name || !nameRegex.test(data.first_name)) {
-      newErrors.first_name = "First name must be 2-100 characters and contain only letters.";
-    }
-    // Last Name check
-    if (!data.last_name || !nameRegex.test(data.last_name)) {
-      newErrors.last_name = "Last name must be 2-100 characters and contain only letters.";
-    }
-    // Email check
-    if (!emailRegex.test(data.email)) {
-      newErrors.email = "Please enter a valid email address.";
-    }
-    // Subject check
-    if (!data.subject) {
-      newErrors.subject = "Please select a reason for reaching out.";
-    }
-    // Message check
-    if (messageLength < 10 || messageLength > 255) {
+
+    if (!Validator.isValidName(data.first_name)) newErrors.first_name = "First name must be 2-100 characters.";
+    if (!Validator.isValidName(data.last_name)) newErrors.last_name = "Last name must be 2-100 characters.";
+    if (!Validator.isValidEmail(data.email)) newErrors.email = "Valid email required.";
+    if (!data.subject) newErrors.subject = "Please select a subject.";
+
+    if (!Validator.isValidText(data.message, 10, 255)) {
       newErrors.message = "Message must be between 10 and 255 characters.";
     }
-    // Only validate if a value exists (since it's optional)
-    if (data.phone && data.phone.trim() !== "") {
-      if (!phoneRegex.test(data.phone)) {
-        newErrors.phone = "Invalid USA phone format (e.g. 555-555-5555).";
-      }
+
+    if (!Validator.isValidPhone(data.phone)) {
+      newErrors.phone = "Invalid USA phone format.";
     }
 
     return newErrors;
@@ -79,7 +57,7 @@ export default function ContactUs() {
     };
 
     // 3. Run Validation
-    const validationErrors = validate(data);
+    const validationErrors = validateContactForm(data);
     // 4. If there are errors, stop here and show them
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
