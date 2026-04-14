@@ -70,7 +70,7 @@ export default function TalentForm() {
     }
 
     try {
-      const response = await fetch("/api/talent-registration", {
+      const response = await fetch("/api/talent", {
         method: "POST",
         body: formData,
       });
