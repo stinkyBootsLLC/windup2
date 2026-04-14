@@ -18,7 +18,7 @@ export default function ContactUs() {
     newsletter: number;
   }
 
-  const validate = (data: ContactData) => {
+  const validateContactForm = (data: ContactData) => {
 
     const newErrors: Record<string, string> = {};
     // This regex allows only letters (including accented ones for international names) 
@@ -79,7 +79,7 @@ export default function ContactUs() {
     };
 
     // 3. Run Validation
-    const validationErrors = validate(data);
+    const validationErrors = validateContactForm(data);
     // 4. If there are errors, stop here and show them
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
