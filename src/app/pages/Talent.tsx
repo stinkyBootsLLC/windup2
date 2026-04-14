@@ -41,11 +41,8 @@ export default function Talent() {
 
         {/* CTA Section */}
         <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl p-8 md:p-12 text-white mb-12 text-center">
-          <h2 className="text-3xl mb-4">Ready to Elevate Your Career?</h2>
-          <p className="text-lg text-purple-100 mb-6">
-            Join the roster of talented artists represented by Wind Up Talent. Submit your 
-            information below and let's start building your future together.
-          </p>
+          <h2 className="text-3xl mb-4">Artist Submistion Form</h2>
+
         </div>
 
         {/* Application Form Section */}

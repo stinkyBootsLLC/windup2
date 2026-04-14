@@ -33,12 +33,7 @@ export default function TalentForm() {
 
   return (
     <div className="bg-white rounded-xl shadow-md p-8">
-      <div className="mb-8">
-        <h2 className="text-2xl mb-4">Artist Submission Form</h2>
-        <p className="text-gray-600">
-          Tell us about yourself and your artistic journey. We're excited to learn more about you!
-        </p>
-      </div>
+      {/* Artist Submission Form */}
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Personal Information */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
