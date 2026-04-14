@@ -7,24 +7,34 @@ export const Filter = {
       .trim()
       .substring(0, maxLen);
   },
-
   // Equivalent to FILTER_SANITIZE_EMAIL
   email: (val: any): string => {
     if (typeof val !== 'string') return '';
     return val.toLowerCase().trim().substring(0, 100);
   },
-
   // Equivalent to FILTER_SANITIZE_NUMBER_INT
   int: (val: any): number => {
     const parsed = parseInt(val, 10);
     return isNaN(parsed) ? 0 : parsed;
   },
-
   // Custom USA Phone sanitizer
   phone: (val: any): string => {
     if (typeof val !== 'string') return '';
     // Strip everything except numbers
     const cleaned = val.replace(/\D/g, '');
-    return cleaned.length === 10 ? cleaned : ''; 
+    return cleaned.length === 10 ? cleaned : '';
+  },
+  // Longer text blocks (Bios/Goals)
+  bio: (val: any): string => {
+    if (typeof val !== 'string') return '';
+    return val
+      .replace(/<[^>]*>?/gm, '') // Strip HTML
+      .trim()
+      .substring(0, 1000); // Higher limit for talent bios
+  },
+  // URLs and Links
+  links: (val: any): string => {
+    if (typeof val !== 'string') return '';
+    return val.replace(/<[^>]*>?/gm, '').trim().substring(0, 500);
   }
 };
