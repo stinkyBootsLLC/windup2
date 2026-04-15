@@ -3,6 +3,8 @@
 
 A high-performance, edge-deployed talent registration system designed for the performing arts industry. This application streamlines the collection of performer data, professional disciplines, and high-resolution media assets.
 
+DEMO SITE: https://windup2.vercel.app/
+
 ## Technical Highlights
 
 * **Edge-First Architecture:** Built on **Vercel Edge Functions** and **Turso (libSQL)** to ensure sub-100ms database latency globally.
