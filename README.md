@@ -17,7 +17,7 @@ A high-performance, edge-deployed talent registration system designed for the pe
 | **Frontend** | React, TypeScript, Tailwind CSS, Lucide Icons |
 | **Backend** | Vercel Edge Functions (TypeScript) |
 | **Database** | Turso (SQLite/libSQL) |
-| **Validation** | Custom shared utilities for WCAG 2 AA compliance |
+| **Accessibility** | WCAG 2 AA compliance |
 
 ---
 
