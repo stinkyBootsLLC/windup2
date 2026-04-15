@@ -42,7 +42,7 @@ windup_TURSO_AUTH_TOKEN=your_auth_token
 ### Installation
 1. Clone the repository.
 2. Install dependencies: `npm install`.
-3. Run the development server via Vercel CLI: `vercel dev`.
+3. Run the development server via Vercel CLI: `npx vercel dev`.
 
 ---
 
