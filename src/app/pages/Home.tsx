@@ -50,7 +50,7 @@ export default function Home() {
       name: "Sarah Mitchell",
       location: "Los Angeles, CA",
       rating: 5,
-      text: "Wind Up Dance Tour changed my life! Learning from choreographers who've worked with Beyoncé and other major artists was absolutely incredible. The energy, the technique, and the connections I made were priceless.",
+      text: "Wind Up Dance Tour is amazing! The best choreographers in the industry at each event and extremely well organized. If you're a dancer these events are a MUST. Get to one!",
       date: "March 2026",
     },
     {
