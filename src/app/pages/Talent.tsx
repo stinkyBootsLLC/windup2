@@ -42,7 +42,8 @@ export default function Talent() {
         {/* CTA Section */}
         <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl p-8 md:p-12 text-white mb-12 text-center">
           <h2 className="text-3xl mb-4">Artist Submistion Form</h2>
-
+          <p className="text-lg mb-6">Whether you’re a dancer, aerialist, musician, or multi-disciplinary performer, Wind Up Talent is here to help you grow, connect, and shine.
+            Fill out the form below to tell us more about you, your artistry, and what you’re looking for.</p>
         </div>
 
         {/* Application Form Section */}
