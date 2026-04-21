@@ -6,11 +6,39 @@ import { Validator } from "../../lib/util";
 
 export default function DanceWorkshopForm() {
 
-  // const [submitted, setSubmitted] = useState(false);
   const [registrationType, setRegistrationType] = useState("");
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success'>('idle');
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [selectedWorkshops, setSelectedWorkshops] = useState<string[]>([]);
 
+  const handleWorkshopChange = (id: string) => {
+    setSelectedWorkshops((prev) => {
+      if (prev.includes(id)) {
+        return prev.filter((item) => item !== id);
+      } else {
+        // Logic: If selecting 'all-workshops', clear everything else.
+        // If selecting a specific workshop, ensure 'all-workshops' isn't active.
+        if (id === 'all-workshops') return ['all-workshops'];
+        return [...prev.filter(item => item !== 'all-workshops'), id];
+      }
+    });
+  };
+// const handleWorkshopChange = (id: string) => {
+//   setSelectedWorkshops((prev) => {
+//     // If unchecking an item
+//     if (prev.includes(id)) {
+//       return prev.filter((item) => item !== id);
+//     } 
+    
+//     // If checking 'all-workshops', clear everything else
+//     if (id === 'all-workshops') {
+//       return ['all-workshops'];
+//     } 
+    
+//     // If checking a specific workshop, ensure 'all-workshops' is removed
+//     return [...prev.filter(item => item !== 'all-workshops'), id];
+//   });
+// };
 
   const validateForm = (formData: FormData) => {
     const newErrors: Record<string, string> = {};
@@ -20,6 +48,7 @@ export default function DanceWorkshopForm() {
     const last_name = sanitize(formData.get("last_name") as string);
     const email = sanitize(formData.get("email") as string);
     const pole_training = sanitize(formData.get("pole_training") as string);
+    const trainingValue = parseInt(pole_training, 10);
     const emergency = sanitize(formData.get("emergency_contact") as string);
 
     // Run Validator checks
@@ -27,10 +56,12 @@ export default function DanceWorkshopForm() {
     if (!Validator.isValidName(last_name)) newErrors.last_name = "Last name required (letters only).";
     if (!Validator.isValidEmail(email)) newErrors.email = "Please enter a valid email address.";
 
-    // Custom text lengths using isValidText
-    if (!Validator.isValidText(pole_training, 3, 200)) {
-      newErrors.pole_training = "Please describe your experience (3-200 chars).";
+    if (isNaN(trainingValue) || trainingValue < 0) {
+      newErrors.pole_training = "Please enter a valid number of years.";
     }
+
+
+
     if (!Validator.isValidText(emergency, 5, 200)) {
       newErrors.emergency_contact = "Please provide a name and contact number.";
     }
@@ -73,9 +104,8 @@ export default function DanceWorkshopForm() {
 
       if (response.ok) {
 
-        form.reset();         // <--- This clears the input fields
-        setRegistrationType(""); // <--- Clear your specific React state
-        // setSubmitted(true);
+        form.reset();
+        setRegistrationType("");
         setStatus('success');
         window.scrollTo(0, 0);
 
@@ -103,7 +133,7 @@ export default function DanceWorkshopForm() {
             Check your email for workshop details and location info!
           </p>
           <button
-            onClick={() => setStatus('idle')} // <--- Brings the form back
+            onClick={() => setStatus('idle')}
             className="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors"
           >
             Register Another Performer
@@ -112,6 +142,11 @@ export default function DanceWorkshopForm() {
       </div>
     );
   }
+
+  const totalCost = selectedWorkshops.reduce((acc, workshopId) => {
+    if (workshopId === 'all-workshops') return 140;
+    return acc + 35;
+  }, 0)
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -262,14 +297,17 @@ export default function DanceWorkshopForm() {
             {/* Pole Training Experience */}
             <div>
               <label htmlFor="pole_training" className="block text-sm font-medium text-gray-700 mb-2">
-                How many years of pole training do you have? <span className="text-red-500 ml-1" aria-hidden="true">*</span>
+                Years of Pole Training <span className="text-red-500 ml-1" aria-hidden="true">*</span>
               </label>
               <input
                 id="pole_training"
                 name="pole_training"
-                type="text"
+                type="number"
+                inputMode="numeric"
+                min="0"
+                max="50"
                 required
-                placeholder="e.g., 2 years, 6 months"
+                placeholder="0"
                 className={`w-full px-4 py-2 border rounded-lg focus:ring-2 outline-none transition-colors ${errors.pole_training ? 'border-red-500 bg-red-50' : 'border-gray-300 focus:ring-purple-600'
                   }`}
               />
@@ -327,6 +365,7 @@ export default function DanceWorkshopForm() {
                 Purchase Options <span className="text-red-500 ml-1" aria-hidden="true">*</span>
               </legend>
               {errors.purchaseOptions && <p className="text-red-600 text-xs mb-3">{errors.purchaseOptions}</p>}
+
               <div className="space-y-3">
                 {[
                   { id: 'all-workshops', label: 'All workshops - two days', price: '$140', highlight: true },
@@ -335,25 +374,61 @@ export default function DanceWorkshopForm() {
                   { id: 'ws3', label: 'Workshop 3', price: '$35' },
                   { id: 'ws4', label: 'Workshop 4', price: '$35' },
                   { id: 'ws5', label: 'Workshop 5', price: '$35' },
-                ].map((opt) => (
-                  <label key={opt.id} className="flex items-start cursor-pointer group">
-                    <input
-                      id={opt.id}
-                      type="checkbox"
-                      name="purchaseOptions"
-                      value={opt.id}
-                      className="mt-1 w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500"
-                    />
-                    <div className="ml-3">
-                      <span className="text-gray-900 group-hover:text-purple-600 transition-colors">{opt.label}</span>
-                      <span className={`ml-2 font-semibold ${opt.highlight ? 'text-purple-600' : 'text-gray-500'}`}>
-                        ({opt.price})
-                      </span>
-                    </div>
-                  </label>
-                ))}
+                ].map((opt) => {
+                  // Logic: Disable individual workshops if "All" is selected
+                  // Logic: Disable "All" if any individual workshop is selected
+                  const isAllSelected = selectedWorkshops.includes('all-workshops');
+                  const isIndivSelected = selectedWorkshops.length > 0 && !isAllSelected;
+
+                  const isDisabled =
+                    (opt.id !== 'all-workshops' && isAllSelected) ||
+                    (opt.id === 'all-workshops' && isIndivSelected);
+
+                  return (
+                    <label
+                      key={opt.id}
+                      className={`flex items-start cursor-pointer group ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    >
+                      <input
+                        id={opt.id}
+                        type="checkbox"
+                        name="purchaseOptions"
+                        value={opt.id}
+                        checked={selectedWorkshops.includes(opt.id)}
+                        disabled={isDisabled}
+                        onChange={() => handleWorkshopChange(opt.id)}
+                        className="mt-1 w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500 disabled:bg-gray-200"
+                      />
+                      <div className="ml-3">
+                        <span className={`transition-colors ${isDisabled ? 'text-gray-400' : 'text-gray-900 group-hover:text-purple-600'}`}>
+                          {opt.label}
+                        </span>
+                        <span className={`ml-2 font-semibold ${isDisabled ? 'text-gray-400' : opt.highlight ? 'text-purple-600' : 'text-gray-500'}`}>
+                          ({opt.price})
+                        </span>
+                      </div>
+                    </label>
+                  );
+                })}
               </div>
             </fieldset>
+
+            {/* Total Cost Display */}
+            <div className="mt-4 p-4 bg-purple-50 border border-purple-100 rounded-lg flex justify-between items-center animate-in fade-in slide-in-from-bottom-2">
+              <div>
+                <p className="text-sm text-purple-700 font-medium">Estimated Total</p>
+                <p className="text-xs text-purple-700 italic">
+                  {selectedWorkshops.length === 0
+                    ? "No workshops selected"
+                    : `${selectedWorkshops.length} item(s) selected`}
+                </p>
+              </div>
+              <div className="text-2xl font-bold text-purple-600">
+                ${totalCost}
+              </div>
+            </div>
+
+
 
             {/* Agreements */}
             <div className="pt-6 border-t border-gray-200 space-y-4">

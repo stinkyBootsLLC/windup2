@@ -7,7 +7,7 @@ import AboutUs from "./pages/AboutUs";
 import FAQ from "./pages/FAQ";
 import Talent from "./pages/Talent";
 import ContactUs from "./pages/ContactUs";
-import DancerApplicationForm from "./pages/DancerApplicationForm";
+// import DancerApplicationForm from "./pages/DancerApplicationForm";
 import DanceWorkshopForm from "./pages/DanceWorkshopForm";
 
 export const router = createBrowserRouter([
@@ -22,7 +22,7 @@ export const router = createBrowserRouter([
       { path: "faq", Component: FAQ },
       { path: "talent", Component: Talent },
       { path: "contact", Component: ContactUs },
-      { path: "dancer-application", Component: DancerApplicationForm },
+      // { path: "dancer-application", Component: DancerApplicationForm },
       { path: "workshop-form", Component: DanceWorkshopForm },
     ],
   },

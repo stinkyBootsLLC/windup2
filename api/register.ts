@@ -22,7 +22,7 @@ export default async function handler(req: Request) {
     const email = sanitize(formData.get("email") as string).toLowerCase();
     const registration_type = sanitize(formData.get("registrationType") as string);
     const studio_name = formData.get("studio_name") ? sanitize(formData.get("studio_name") as string) : null;
-    const pole_training = sanitize(formData.get("pole_training") as string);
+    const pole_training = parseInt(formData.get("pole_training") as string, 10);
     const can_invert = sanitize(formData.get("canInvert") as string);
     const emergency_contact = sanitize(formData.get("emergency_contact") as string);
     
@@ -53,7 +53,7 @@ export default async function handler(req: Request) {
         email, 
         registration_type, 
         studio_name, 
-        pole_training, 
+        isNaN(pole_training) ? 0 : pole_training, // Fallback to 0 if something goes wrong
         can_invert, 
         emergency_contact, 
         purchase_options
