@@ -23,22 +23,6 @@ export default function DanceWorkshopForm() {
       }
     });
   };
-// const handleWorkshopChange = (id: string) => {
-//   setSelectedWorkshops((prev) => {
-//     // If unchecking an item
-//     if (prev.includes(id)) {
-//       return prev.filter((item) => item !== id);
-//     } 
-    
-//     // If checking 'all-workshops', clear everything else
-//     if (id === 'all-workshops') {
-//       return ['all-workshops'];
-//     } 
-    
-//     // If checking a specific workshop, ensure 'all-workshops' is removed
-//     return [...prev.filter(item => item !== 'all-workshops'), id];
-//   });
-// };
 
   const validateForm = (formData: FormData) => {
     const newErrors: Record<string, string> = {};
@@ -427,9 +411,6 @@ export default function DanceWorkshopForm() {
                 ${totalCost}
               </div>
             </div>
-
-
-
             {/* Agreements */}
             <div className="pt-6 border-t border-gray-200 space-y-4">
               <div className="flex flex-col">
@@ -492,10 +473,6 @@ export default function DanceWorkshopForm() {
               </p>
             </div>
           </form>
-
-
-
-
         </div>
       </div>
     </div>
