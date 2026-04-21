@@ -1,33 +1,112 @@
 import { useState } from "react";
 import { CheckCircle, AlertCircle } from "lucide-react";
 
-export default function DanceWorkshopForm() {
-  const [submitted, setSubmitted] = useState(false);
-  const [registrationType, setRegistrationType] = useState("");
+import { sanitize } from "../../lib/util";
+import { Validator } from "../../lib/util";
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitted(true);
-    window.scrollTo(0, 0);
+export default function DanceWorkshopForm() {
+
+  // const [submitted, setSubmitted] = useState(false);
+  const [registrationType, setRegistrationType] = useState("");
+  const [status, setStatus] = useState<'idle' | 'submitting' | 'success'>('idle');
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+
+  const validateForm = (formData: FormData) => {
+    const newErrors: Record<string, string> = {};
+
+    // Extract and sanitize values for validation
+    const first_name = sanitize(formData.get("first_name") as string);
+    const last_name = sanitize(formData.get("last_name") as string);
+    const email = sanitize(formData.get("email") as string);
+    const pole_training = sanitize(formData.get("pole_training") as string);
+    const emergency = sanitize(formData.get("emergency_contact") as string);
+
+    // Run Validator checks
+    if (!Validator.isValidName(first_name)) newErrors.first_name = "First name required (letters only).";
+    if (!Validator.isValidName(last_name)) newErrors.last_name = "Last name required (letters only).";
+    if (!Validator.isValidEmail(email)) newErrors.email = "Please enter a valid email address.";
+
+    // Custom text lengths using isValidText
+    if (!Validator.isValidText(pole_training, 3, 200)) {
+      newErrors.pole_training = "Please describe your experience (3-200 chars).";
+    }
+    if (!Validator.isValidText(emergency, 5, 200)) {
+      newErrors.emergency_contact = "Please provide a name and contact number.";
+    }
+
+    // Checkbox validation (Ensure at least one workshop is selected)
+    const options = formData.getAll("purchaseOptions");
+    if (options.length === 0) {
+      newErrors.purchaseOptions = "Please select at least one workshop option.";
+    }
+
+    return newErrors;
   };
 
-  if (submitted) {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setErrors({}); // Clear old errors
+
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+
+    // Run Validation
+    const vErrors = validateForm(formData);
+    if (Object.keys(vErrors).length > 0) {
+      setErrors(vErrors);
+      // Scroll to the first error or top of form
+      window.scrollTo({ top: 400, behavior: 'smooth' });
+      return;
+    }
+
+    setStatus('submitting');
+
+    try {
+
+      const formData = new FormData(form);
+
+      const response = await fetch("/api/register", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (response.ok) {
+
+        form.reset();         // <--- This clears the input fields
+        setRegistrationType(""); // <--- Clear your specific React state
+        // setSubmitted(true);
+        setStatus('success');
+        window.scrollTo(0, 0);
+
+
+      } else {
+        throw new Error("Dancer workshop form Submission failed");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error submitting registration.");
+      setStatus('idle');
+    }
+  };
+
+  if (status === 'success') {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-        <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8 text-center">
+        <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8 text-center animate-in fade-in zoom-in duration-300">
           <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <CheckCircle className="w-10 h-10 text-green-600" />
           </div>
-          <h2 className="text-2xl mb-4">Registration Confirmed!</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">Registration Confirmed!</h2>
           <p className="text-gray-600 mb-6">
-            You're all set! You'll receive a confirmation email shortly with workshop details,
-            location information, and what to bring. We can't wait to see you dance!
+            Your information has been securely sent to our database.
+            Check your email for workshop details and location info!
           </p>
           <button
-            onClick={() => setSubmitted(false)}
-            className="text-purple-600 hover:text-purple-700 font-semibold"
+            onClick={() => setStatus('idle')} // <--- Brings the form back
+            className="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors"
           >
-            Register for Another Workshop
+            Register Another Performer
           </button>
         </div>
       </div>
@@ -39,7 +118,7 @@ export default function DanceWorkshopForm() {
       {/* Header */}
       <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-5xl mb-4">Wind Up Dance Tour 2.0 Dancer Registration</h1>
+          <h1 className="text-5xl mb-4">Event Registration</h1>
           <p className="text-xl text-purple-100 mb-4">
             Register for our exclusive pole and aerial workshops
           </p>
@@ -61,280 +140,287 @@ export default function DanceWorkshopForm() {
               <div className="text-sm text-red-900">
                 <p className="font-semibold mb-2">REFUND POLICY</p>
                 <p>
-                  All registrations and payments for this event are final and non-refundable. 
-                  By submitting your registration, you acknowledge and agree that no refunds 
-                  will be issued for any reason, including schedule changes, illness, or inability 
-                  to attend. Credit or transfer of registration is not guaranteed and is granted 
+                  All registrations and payments for this event are final and non-refundable.
+                  By submitting your registration, you acknowledge and agree that no refunds
+                  will be issued for any reason, including schedule changes, illness, or inability
+                  to attend. Credit or transfer of registration is not guaranteed and is granted
                   only at the discretion of the event organizers.
                 </p>
               </div>
             </div>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6" noValidate>
             {/* Dancer Information */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Dancer Name: *
-              </label>
-              <input
-                type="text"
-                required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent"
-              />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label htmlFor="first_name" className="block text-sm font-medium text-gray-700 mb-2">
+                  First Name <span className="text-red-500 ml-1" aria-hidden="true">*</span>
+                </label>
+                <input
+                  id="first_name"
+                  name="first_name"
+                  type="text"
+                  required
+                  className={`w-full px-4 py-2 border rounded-lg focus:ring-2 outline-none transition-colors ${errors.first_name ? 'border-red-500 bg-red-50' : 'border-gray-300 focus:ring-purple-600'
+                    }`}
+                />
+                {errors.first_name && <p className="text-red-600 text-xs mt-1">{errors.first_name}</p>}
+              </div>
+              <div>
+                <label htmlFor="last_name" className="block text-sm font-medium text-gray-700 mb-2">
+                  Last Name <span className="text-red-500 ml-1" aria-hidden="true">*</span>
+                </label>
+                <input
+                  id="last_name"
+                  name="last_name"
+                  type="text"
+                  required
+                  className={`w-full px-4 py-2 border rounded-lg focus:ring-2 outline-none transition-colors ${errors.last_name ? 'border-red-500 bg-red-50' : 'border-gray-300 focus:ring-purple-600'
+                    }`}
+                />
+                {errors.last_name && <p className="text-red-600 text-xs mt-1">{errors.last_name}</p>}
+              </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Dancer Age: *
+              <label htmlFor="dancer_age" className="block text-sm font-medium text-gray-700 mb-2">
+                Age <span className="text-red-500 ml-1" aria-hidden="true">*</span>
               </label>
               <input
+                id="dancer_age"
+                name="dancer_age"
                 type="number"
                 required
                 min="18"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 outline-none transition-colors ${errors.dancer_age ? 'border-red-500 bg-red-50' : 'border-gray-300 focus:ring-purple-600'
+                  }`}
               />
+              {errors.dancer_age && <p className="text-red-600 text-xs mt-1">{errors.dancer_age}</p>}
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Email: *
+              <label htmlFor="dancer_email" className="block text-sm font-medium text-gray-700 mb-2">
+                Email <span className="text-red-500 ml-1" aria-hidden="true">*</span>
               </label>
               <input
+                id="dancer_email"
+                name="email"
                 type="email"
                 required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 outline-none transition-colors ${errors.email ? 'border-red-500 bg-red-50' : 'border-gray-300 focus:ring-purple-600'
+                  }`}
               />
+              {errors.email && <p className="text-red-600 text-xs mt-1">{errors.email}</p>}
             </div>
 
             {/* Registration Type */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Are you registering with a studio or as an independent dancer? *
-              </label>
+            <fieldset>
+              <legend className="block text-sm font-medium text-gray-700 mb-2">
+                Are you registering with a studio or as an independent dancer? <span className="text-red-500 ml-1" aria-hidden="true">*</span>
+              </legend>
               <div className="space-y-2">
-                <label className="flex items-center">
+                <label className="flex items-center cursor-pointer">
                   <input
                     type="radio"
                     name="registrationType"
                     value="independent"
-                    required
                     onChange={(e) => setRegistrationType(e.target.value)}
-                    className="mr-2"
+                    className="w-4 h-4 text-purple-600 border-gray-300 focus:ring-purple-500"
                   />
-                  <span className="text-gray-700">Independent</span>
+                  <span className="ml-2 text-gray-700">Independent</span>
                 </label>
-                <label className="flex items-center">
+                <label className="flex items-center cursor-pointer">
                   <input
                     type="radio"
                     name="registrationType"
                     value="studio"
-                    required
                     onChange={(e) => setRegistrationType(e.target.value)}
-                    className="mr-2"
+                    className="w-4 h-4 text-purple-600 border-gray-300 focus:ring-purple-500"
                   />
-                  <span className="text-gray-700">Dance Studio</span>
+                  <span className="ml-2 text-gray-700">Dance Studio</span>
                 </label>
               </div>
-            </div>
+              {errors.registrationType && <p className="text-red-600 text-xs mt-1">{errors.registrationType}</p>}
+            </fieldset>
 
             {/* Conditional Studio Name Field */}
             {registrationType === "studio" && (
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  If with a studio; please provide the studio name:
+              <div className="animate-in fade-in slide-in-from-top-1">
+                <label htmlFor="studio_name" className="block text-sm font-medium text-gray-700 mb-2">
+                  Please provide the studio name:
                 </label>
                 <input
+                  id="studio_name"
+                  name="studio_name"
                   type="text"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 outline-none"
                 />
               </div>
             )}
 
             {/* Pole Training Experience */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                How many years of pole training do you have? *
+              <label htmlFor="pole_training" className="block text-sm font-medium text-gray-700 mb-2">
+                How many years of pole training do you have? <span className="text-red-500 ml-1" aria-hidden="true">*</span>
               </label>
               <input
+                id="pole_training"
+                name="pole_training"
                 type="text"
                 required
-                placeholder="e.g., 2 years, 6 months, etc."
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+                placeholder="e.g., 2 years, 6 months"
+                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 outline-none transition-colors ${errors.pole_training ? 'border-red-500 bg-red-50' : 'border-gray-300 focus:ring-purple-600'
+                  }`}
               />
+              {errors.pole_training && <p className="text-red-600 text-xs mt-1">{errors.pole_training}</p>}
             </div>
 
             {/* Can You Invert */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Can you invert? *
-              </label>
+            <fieldset>
+              <legend className="block text-sm font-medium text-gray-700 mb-2">
+                Can you invert? <span className="text-red-500 ml-1" aria-hidden="true">*</span>
+              </legend>
               <div className="space-y-2">
-                <label className="flex items-center">
+                <label className="flex items-center cursor-pointer">
                   <input
                     type="radio"
                     name="canInvert"
                     value="yes"
-                    required
-                    className="mr-2"
+                    className="w-4 h-4 text-purple-600 border-gray-300 focus:ring-purple-500"
                   />
-                  <span className="text-gray-700">Yes</span>
+                  <span className="ml-2 text-gray-700">Yes</span>
                 </label>
-                <label className="flex items-center">
+                <label className="flex items-center cursor-pointer">
                   <input
                     type="radio"
                     name="canInvert"
                     value="no"
-                    required
-                    className="mr-2"
+                    className="w-4 h-4 text-purple-600 border-gray-300 focus:ring-purple-500"
                   />
-                  <span className="text-gray-700">No</span>
+                  <span className="ml-2 text-gray-700">No</span>
                 </label>
               </div>
-            </div>
+              {errors.canInvert && <p className="text-red-600 text-xs mt-1">{errors.canInvert}</p>}
+            </fieldset>
 
             {/* Emergency Contact */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Emergency Contact Name/Phone #: *
+              <label htmlFor="emergency_contact" className="block text-sm font-medium text-gray-700 mb-2">
+                Emergency Contact Name/Phone: <span className="text-red-500 ml-1" aria-hidden="true">*</span>
               </label>
               <input
+                id="emergency_contact"
+                name="emergency_contact"
                 type="text"
                 required
                 placeholder="Name and phone number"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 outline-none transition-colors ${errors.emergency_contact ? 'border-red-500 bg-red-50' : 'border-gray-300 focus:ring-purple-600'
+                  }`}
               />
+              {errors.emergency_contact && <p className="text-red-600 text-xs mt-1">{errors.emergency_contact}</p>}
             </div>
 
             {/* Purchase Options */}
-            <div className="pt-6 border-t border-gray-200">
-              <label className="block text-sm font-medium text-gray-700 mb-3">
-                Purchase Options: *
-              </label>
+            <fieldset className="pt-6 border-t border-gray-200">
+              <legend className="block text-sm font-medium text-gray-700 mb-3">
+                Purchase Options <span className="text-red-500 ml-1" aria-hidden="true">*</span>
+              </legend>
+              {errors.purchaseOptions && <p className="text-red-600 text-xs mb-3">{errors.purchaseOptions}</p>}
               <div className="space-y-3">
-                <label className="flex items-start">
-                  <input
-                    type="checkbox"
-                    name="purchaseOptions"
-                    value="all-workshops"
-                    className="mt-1 mr-2"
-                  />
-                  <div>
-                    <span className="text-gray-900">All workshops - two days</span>
-                    <span className="text-purple-600 ml-2 font-semibold">($140)</span>
-                  </div>
-                </label>
-                <label className="flex items-start">
-                  <input
-                    type="checkbox"
-                    name="purchaseOptions"
-                    value="workshop1"
-                    className="mt-1 mr-2"
-                  />
-                  <div>
-                    <span className="text-gray-900">Workshop 1</span>
-                    <span className="text-gray-500 ml-2">($35)</span>
-                  </div>
-                </label>
-                <label className="flex items-start">
-                  <input
-                    type="checkbox"
-                    name="purchaseOptions"
-                    value="workshop2"
-                    className="mt-1 mr-2"
-                  />
-                  <div>
-                    <span className="text-gray-900">Workshop 2</span>
-                    <span className="text-gray-500 ml-2">($35)</span>
-                  </div>
-                </label>
-                <label className="flex items-start">
-                  <input
-                    type="checkbox"
-                    name="purchaseOptions"
-                    value="workshop3"
-                    className="mt-1 mr-2"
-                  />
-                  <div>
-                    <span className="text-gray-900">Workshop 3</span>
-                    <span className="text-gray-500 ml-2">($35)</span>
-                  </div>
-                </label>
-                <label className="flex items-start">
-                  <input
-                    type="checkbox"
-                    name="purchaseOptions"
-                    value="workshop4"
-                    className="mt-1 mr-2"
-                  />
-                  <div>
-                    <span className="text-gray-900">Workshop 4</span>
-                    <span className="text-gray-500 ml-2">($35)</span>
-                  </div>
-                </label>
-                <label className="flex items-start">
-                  <input
-                    type="checkbox"
-                    name="purchaseOptions"
-                    value="workshop5"
-                    className="mt-1 mr-2"
-                  />
-                  <div>
-                    <span className="text-gray-900">Workshop 5</span>
-                    <span className="text-gray-500 ml-2">($35)</span>
-                  </div>
-                </label>
+                {[
+                  { id: 'all-workshops', label: 'All workshops - two days', price: '$140', highlight: true },
+                  { id: 'ws1', label: 'Workshop 1', price: '$35' },
+                  { id: 'ws2', label: 'Workshop 2', price: '$35' },
+                  { id: 'ws3', label: 'Workshop 3', price: '$35' },
+                  { id: 'ws4', label: 'Workshop 4', price: '$35' },
+                  { id: 'ws5', label: 'Workshop 5', price: '$35' },
+                ].map((opt) => (
+                  <label key={opt.id} className="flex items-start cursor-pointer group">
+                    <input
+                      id={opt.id}
+                      type="checkbox"
+                      name="purchaseOptions"
+                      value={opt.id}
+                      className="mt-1 w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500"
+                    />
+                    <div className="ml-3">
+                      <span className="text-gray-900 group-hover:text-purple-600 transition-colors">{opt.label}</span>
+                      <span className={`ml-2 font-semibold ${opt.highlight ? 'text-purple-600' : 'text-gray-500'}`}>
+                        ({opt.price})
+                      </span>
+                    </div>
+                  </label>
+                ))}
               </div>
-            </div>
+            </fieldset>
 
             {/* Agreements */}
             <div className="pt-6 border-t border-gray-200 space-y-4">
-              <div className="flex items-start">
-                <input
-                  type="checkbox"
-                  id="photo-consent"
-                  required
-                  className="mt-1 mr-3 flex-shrink-0"
-                />
-                <label htmlFor="photo-consent" className="text-sm text-gray-700">
-                  I give permission for Wind Up Dance Tour, LLC to photograph and/or video record me 
-                  (or my child) during the event and to use these images for promotional and marketing 
-                  purposes. I understand no compensation will be provided and all media becomes the 
-                  property of the organization. *
-                </label>
+              <div className="flex flex-col">
+                <div className="flex items-start">
+                  <input
+                    type="checkbox"
+                    id="photo-consent"
+                    name="photoConsent"
+                    required
+                    className="mt-1 w-4 h-4 text-purple-600 border-gray-300 rounded"
+                  />
+                  <label htmlFor="photo-consent" className="ml-3 text-sm text-gray-700 cursor-pointer">
+                    I give permission for Wind Up Dance Tour, LLC to photograph/video record me during the event for marketing purposes. <span className="text-red-500 ml-1" aria-hidden="true">*</span>
+                  </label>
+                </div>
+                {errors.photoConsent && <p className="text-red-600 text-xs mt-1 ml-7">{errors.photoConsent}</p>}
               </div>
 
-              <div className="flex items-start">
-                <input
-                  type="checkbox"
-                  id="liability-waiver"
-                  required
-                  className="mt-1 mr-3 flex-shrink-0"
-                />
-                <label htmlFor="liability-waiver" className="text-sm text-gray-700">
-                  By participating in this showcase/workshop, I acknowledge that dance and physical 
-                  activity involve inherent risks of injury. I voluntarily assume all such risks and 
-                  agree that the organizers, venue, instructors, and staff are not liable for any 
-                  injuries, accidents, or damages that may occur before, during, or after this event. 
-                  I certify that I am physically able to participate and agree to follow all safety 
-                  guidelines. *
-                </label>
+              <div className="flex flex-col">
+                <div className="flex items-start">
+                  <input
+                    type="checkbox"
+                    id="liability-waiver"
+                    name="liabilityWaiver"
+                    required
+                    className="mt-1 w-4 h-4 text-purple-600 border-gray-300 rounded"
+                  />
+                  <label htmlFor="liability-waiver" className="ml-3 text-sm text-gray-700 cursor-pointer">
+                    I assume all risks of injury and agree that staff and venue are not liable for any accidents. <span className="text-red-500 ml-1" aria-hidden="true">*</span>
+                  </label>
+                </div>
+                {errors.liabilityWaiver && <p className="text-red-600 text-xs mt-1 ml-7">{errors.liabilityWaiver}</p>}
               </div>
             </div>
 
-            {/* Submit */}
+            {/* Submit Button with Loading State */}
             <div className="pt-6">
               <button
                 type="submit"
-                className="w-full bg-purple-600 text-white py-3 rounded-lg hover:bg-purple-700 transition-colors font-semibold"
+                disabled={status === 'submitting'}
+                className={`w-full py-4 rounded-lg font-bold shadow-lg transition-all outline-none flex items-center justify-center space-x-2 ${status === 'submitting'
+                  ? 'bg-purple-400 cursor-not-allowed'
+                  : 'bg-purple-600 hover:bg-purple-700 active:scale-95'
+                  } text-white`}
               >
-                Complete Registration
+                {status === 'submitting' ? (
+                  <>
+                    <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span>Processing Registration...</span>
+                  </>
+                ) : (
+                  <span>Complete Registration</span>
+                )}
               </button>
               <p className="text-sm text-gray-500 text-center mt-4">
-                * Indicates required question
+                <span className="text-red-500 ml-1" aria-hidden="true">*</span> Indicates required
               </p>
             </div>
           </form>
+
+
+
+
         </div>
       </div>
     </div>
