@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Upload, CheckCircle } from "lucide-react";
-import { sanitize } from "../../lib/util";
-import { Validator } from "../../lib/util";
+import { sanitize, Validator } from "../../lib/util";
 
 interface TalentData {
   first_name: string;
@@ -56,9 +55,8 @@ export default function TalentForm() {
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
 
-    setIsSubmitting(true); // START LOADING
+    e.preventDefault();
     setErrors({});
 
     const form = e.currentTarget;
@@ -79,10 +77,13 @@ export default function TalentForm() {
     };
 
     const vErrors = validateTalentForm(data);
+
     if (Object.keys(vErrors).length > 0) {
       setErrors(vErrors);
       return;
     }
+
+    setIsSubmitting(true); // START LOADING
 
     try {
       const response = await fetch("/api/talent", {
