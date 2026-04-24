@@ -2,7 +2,7 @@
 // Shared Regex Constants
 export const NAME_REGEX = /^[A-Za-zÀ-ÖØ-öø-ÿ\s]{2,100}$/;
 export const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-export const USA_PHONE_REGEX = /^(?:\+1\s?)?\(?([2-9][0-8][0-7])\)?[-.\s]?([2-9][0-8][0-7])[-.\s]?([0-9]{4})$/;
+export const USA_PHONE_REGEX = /^(?:\+1\s?)?\(?([0-9][0-9][0-9])\)?[-.\s]?([0-9][0-9][0-9])[-.\s]?([0-9]{4})$/;
 
 /**
  * Shared validation logic for common fields
