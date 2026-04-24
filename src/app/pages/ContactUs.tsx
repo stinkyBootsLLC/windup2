@@ -1,12 +1,13 @@
 import { Link } from "react-router";
 import { useState } from "react";
-import { Mail, CheckCircle } from "lucide-react";
+import { Mail, CheckCircle, Loader2 } from "lucide-react";
 import { sanitize, Validator } from "../../lib/util";
 
 
 export default function ContactUs() {
 
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   interface ContactData {
@@ -63,7 +64,9 @@ export default function ContactUs() {
       setErrors(validationErrors);
       return;
     }
-    // 5. If valid, proceed to API call
+
+    setIsSubmitting(true);
+
     try {
       const response = await fetch("/api/contact", {
         method: "POST",
@@ -81,6 +84,8 @@ export default function ContactUs() {
       }
     } catch (err) {
       alert("Oops! Something went wrong on our end. Please try again later.");
+    } finally {
+      setIsSubmitting(false); // Stop loading regardless of success/fail
     }
   };
 
@@ -264,11 +269,21 @@ export default function ContactUs() {
                   </label>
                 </div>
 
-                <button
+<button
                   type="submit"
-                  className="w-full bg-purple-600 text-white py-3 rounded-lg hover:bg-purple-700 focus:ring-4 focus:ring-purple-300 transition-all font-semibold outline-none"
+                  disabled={isSubmitting}
+                  className={`w-full py-4 rounded-lg font-bold shadow-lg transition-all flex items-center justify-center space-x-2 text-white ${
+                    isSubmitting ? 'bg-purple-400 cursor-not-allowed' : 'bg-purple-600 hover:bg-purple-700 active:scale-95'
+                  }`}
                 >
-                  Send Message
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      <span>Sending Message...</span>
+                    </>
+                  ) : (
+                    <span>Send Message</span>
+                  )}
                 </button>
               </form>
             </div>
