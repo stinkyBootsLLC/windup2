@@ -3,48 +3,7 @@ import { Calendar, Users, Star, ArrowRight, Quote } from "lucide-react";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 
 export default function Home() {
-  // const features = [
-  //   {
-  //     icon: Calendar,
-  //     title: "Exclusive Events",
-  //     description: "Join our carefully curated dance events featuring world-class choreographers",
-  //   },
-  //   {
-  //     icon: Users,
-  //     title: "Expert Instructors",
-  //     description: "Learn from renowned choreographers who have worked with top artists globally",
-  //   },
-  //   {
-  //     icon: Star,
-  //     title: "Premium Experience",
-  //     description: "Immersive workshops designed to elevate your dance skills to the next level",
-  //   },
-  // ];
-
-  // const upcomingEvents = [
-  //   {
-  //     id: 1,
-  //     title: "Contemporary Fusion Workshop",
-  //     date: "May 15, 2026",
-  //     instructor: "Maria Rodriguez",
-  //     location: "Los Angeles, CA",
-  //   },
-  //   {
-  //     id: 2,
-  //     title: "Hip-Hop Intensive",
-  //     date: "June 2, 2026",
-  //     instructor: "Jordan Smith",
-  //     location: "New York, NY",
-  //   },
-  //   {
-  //     id: 3,
-  //     title: "Jazz & Broadway Masterclass",
-  //     date: "June 20, 2026",
-  //     instructor: "Taylor Chen",
-  //     location: "Chicago, IL",
-  //   },
-  // ];
-
+  
   const reviews = [
     {
       name: "Sarah Mitchell",
@@ -140,20 +99,9 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA Section */}
+      
       <section className="py-16 bg-gradient-to-r from-purple-600 to-pink-600 text-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl mb-4">Ready to Start Your Journey?</h2>
-          <p className="text-xl mb-8 text-purple-100">
-            Apply today and join thousands of dancers who have transformed their skills
-          </p>
-          <Link
-            to="/dancer-application"
-            className="bg-white text-purple-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors inline-block"
-          >
-            Submit Your Application
-          </Link>
-        </div>
+        
       </section>
     </div>
   );
