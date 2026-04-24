@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { CheckCircle, AlertCircle } from "lucide-react";
-
-import { sanitize } from "../../lib/util";
-import { Validator } from "../../lib/util";
+import { sanitize, Validator } from "../../lib/util";
 
 export default function DanceWorkshopForm() {
 
