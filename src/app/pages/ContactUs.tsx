@@ -1,8 +1,8 @@
 import { Link } from "react-router";
 import { useState } from "react";
 import { Mail, CheckCircle } from "lucide-react";
-import { sanitize } from "../../lib/util";
-import { Validator } from "../../lib/util";
+import { sanitize, Validator } from "../../lib/util";
+
 
 export default function ContactUs() {
 
