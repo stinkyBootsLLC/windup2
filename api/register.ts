@@ -25,6 +25,8 @@ export default async function handler(req: Request) {
     const pole_training = parseInt(formData.get("pole_training") as string, 10);
     const can_invert = sanitize(formData.get("canInvert") as string);
     const emergency_contact = sanitize(formData.get("emergency_contact") as string);
+    const photo_consent = formData.get("photoConsent") === "on" ? 1 : 0;
+    const liability_waiver = formData.get("liabilityWaiver") === "on" ? 1 : 0;
     
     // Checkboxes are mapped, sanitized, then stringified for the BLOB/TEXT column
     const rawOptions = formData.getAll("purchaseOptions") as string[];
@@ -44,8 +46,8 @@ export default async function handler(req: Request) {
       sql: `INSERT INTO event_registration (
         first_name, last_name, age, email, registration_type, 
         studio_name, pole_training, can_invert, emergency_contact, 
-        purchase_options
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        purchase_options, photo_consent, liability_waiver
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       args: [
         first_name, 
         last_name, 
@@ -53,10 +55,12 @@ export default async function handler(req: Request) {
         email, 
         registration_type, 
         studio_name, 
-        isNaN(pole_training) ? 0 : pole_training, // Fallback to 0 if something goes wrong
+        isNaN(pole_training) ? 0 : pole_training, 
         can_invert, 
         emergency_contact, 
-        purchase_options
+        purchase_options,
+        photo_consent,      // Map to photo_consent column
+        liability_waiver    // Map to liability_waiver column
       ],
     });
 

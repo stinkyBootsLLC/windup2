@@ -42,8 +42,6 @@ export default function DanceWorkshopForm() {
       newErrors.pole_training = "Please enter a valid number of years.";
     }
 
-
-
     if (!Validator.isValidText(emergency, 5, 200)) {
       newErrors.emergency_contact = "Please provide a name and contact number.";
     }
@@ -85,13 +83,10 @@ export default function DanceWorkshopForm() {
       });
 
       if (response.ok) {
-
         form.reset();
         setRegistrationType("");
         setStatus('success');
         window.scrollTo(0, 0);
-
-
       } else {
         throw new Error("Dancer workshop form Submission failed");
       }
